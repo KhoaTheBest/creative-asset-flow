@@ -9,7 +9,7 @@ const MarkdownNode = ({ data }: NodeProps<MarkdownData>) => {
       <div className="cursor-move border-b border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium">
         {data.label}
       </div>
-      <div className="nodrag p-3">
+      <div className="p-3">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
