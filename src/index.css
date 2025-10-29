@@ -13,3 +13,7 @@ body {
 #root {
   @apply min-h-screen;
 }
+
+.react-flow__node-resizer {
+  @apply border-2 border-blue-500 bg-white;
+}

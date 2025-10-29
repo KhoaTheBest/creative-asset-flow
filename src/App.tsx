@@ -17,10 +17,33 @@ function App() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  // Allow edges only when both endpoints share the same parent (including both having no parent).
+  const isValidConnection = useCallback(
+    (connection: Connection) => {
+      const src = nodes.find((n) => n.id === connection.source);
+      const tgt = nodes.find((n) => n.id === connection.target);
+      if (!src || !tgt) return false;
+
+      const srcParent = (src as any).parentNode ?? null;
+      const tgtParent = (tgt as any).parentNode ?? null;
+
+      // Valid if both are outside any group (null === null) OR both inside the same group
+      return srcParent === tgtParent;
+    },
+    [nodes]
+  );
+
   const onConnect = useCallback(
-    (connection: Connection) =>
-      setEdges((currentEdges) => addEdge(connection, currentEdges)),
-    [setEdges]
+    (connection: Connection) => {
+      if (!isValidConnection(connection)) {
+        console.warn(
+          '[React Flow] Blocked connection: edges are only allowed within the same container or both outside of containers.'
+        );
+        return;
+      }
+      setEdges((currentEdges) => addEdge(connection, currentEdges));
+    },
+    [setEdges, isValidConnection]
   );
 
   return (
@@ -37,11 +60,13 @@ function App() {
         <div className="h-full">
           <ReactFlow
             nodes={nodes}
-            edges={edges}
+            // edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            isValidConnection={isValidConnection}
             nodeTypes={nodeTypes}
+            nodesDraggable={true}
             fitView
             className="h-full bg-slate-100"
           >

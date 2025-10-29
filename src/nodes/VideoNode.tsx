@@ -10,7 +10,7 @@ const VideoNode = ({ data }: NodeProps<MediaData>) => {
       {/* nodrag allows interacting with the video controls without dragging the node */}
       <video
         src={data.src}
-        className="nodrag block h-36 w-64 object-cover"
+        className="block h-36 w-64 object-cover"
         controls
         playsInline
       />
